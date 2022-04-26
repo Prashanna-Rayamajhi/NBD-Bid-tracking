@@ -1,0 +1,96 @@
+﻿@model NBD_BID_SYSTEM.Models.Client
+
+@{
+    ViewData["Title"] = "Client Details";
+}
+
+<h2>Client Details</h2>
+<div style="text-align:center">
+    <h3>@Model.Name</h3>
+</div>
+<div style="font-size:18px;">
+    <hr />
+    <dl class="row" style="margin-top:5%;">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Name):
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.CpFName):
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.CpFName)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.CpLName):
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.CpLName)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.CpPosition):
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.CpPosition)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Address):
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Address)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.City):
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.City)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Province):
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Province.Abbrevation)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.PostalCode):
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.PostalCode)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.PhoneNumber):
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.PhoneFormatted)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Projects):
+        </dt>
+        <dd class="col-sm-9">
+            
+            @if (@Model.Projects.Count > 0)
+            {
+            
+                @foreach (var p in Model.Projects)
+                {
+                    <a asp-controller="Projects" asp-action="Details" asp-route-ID="@p.ID">
+                        @p.Site <br />
+                    </a>  
+                }
+                 
+            }
+            else
+            {
+                <span>No Projects</span>
+            }
+        </dd>
+    </dl>
+</div>
+<div style="font-size:18px">
+    <a asp-action="Edit" asp-route-id="@Model.ID" class="btn btn-outline-primary">Edit</a> |
+    <a asp-action="Create" asp-controller="Projects" asp-route-ClientID="@Model.ID">Add Project</a> |
+    <a href='@ViewData["returnURL"]' class="ml-2">Back to Client List</a>
+</div>
+

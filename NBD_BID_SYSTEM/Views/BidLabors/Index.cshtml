@@ -1,0 +1,62 @@
+﻿@model IEnumerable<NBD_BID_SYSTEM.Models.BidLabor>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1 class="mb-3">Bid Labors</h1>
+
+@*<p>
+        <a asp-action="Create" class="btn btn-outline-primary">Add New Bid Labor</a>
+    </p>*@
+<form asp-action="Index" method="get">
+    <table class="table table-borderless table-striped">
+        <thead style="background: #198ab4; font-weight: normal; color: #fff">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.HoursWorked)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ExtPrice)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Labor)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Bid.Project.Site)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.HoursWorked)
+                    </td>
+                    <td>
+                        $@Html.DisplayFor(modelItem => item.ExtPrice)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Labor.Type)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Bid.Project.Site)
+                    </td>
+                    <td>
+                        @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                        {
+                            <a asp-action="Edit" asp-route-id="@item.ID">Edit</a>
+                        } |
+                        <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+                        @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                        {
+                            <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                        }
+                        </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</form>

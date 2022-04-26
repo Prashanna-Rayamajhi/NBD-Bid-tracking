@@ -1,0 +1,164 @@
+﻿@model IEnumerable<NBD_BID_SYSTEM.Models.Bid>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Bid Information</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-outline-primary">Add New Bid</a>
+</p>
+<form asp-action="Index" method="get">
+    <!--Hidden Inputs-->
+    <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
+    <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
+
+    <input type="button" id="collapseBtn" class="btn btn-outline-secondary mt-2 mb-1" data-toggle="collapse" data-target="#collapsableFilterOptions" aria-expanded="false" aria-controls="collapsableFilterOptions" value="Filter" />
+    <div class="container bg-light pt-3 pb-4 collapse @ViewData["IsFiltering"]" id="collapsableFilterOptions">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label for="txtProject">Project Site</label>
+                    <input type="text" name="project" id="txtProject" class="form-control" />
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label for="txtAmtGreaterThan">Amount Greater Than:</label>
+                    <input type="text" name="amtGreaterThan" id="txtAmtGreaterThan" class="form-control" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <input type="submit" name="btnAction" value="Filter" class="btn btn-outline-success" />
+                <a asp-action="Index" class="btn btn-outline-dark">Clear </a>
+            </div>
+        </div>
+    </div>
+    <table class="table table-striped table-borderless">
+        <thead style="background: #198ab4; color:#FFF; font-weight:200;">
+            <tr>
+                <th>
+                    <input type="submit" name="btnAction" value="Project Site" class="btn btn-link text-white" />
+                </th>
+                <th>
+                    <input type="submit" name="btnAction" value="Bid Date" class="btn btn-link text-white" />
+                </th>
+                <th>
+                    <input type="submit" name="btnAction" value="Bid Amount" class="btn btn-link text-white" />
+                </th>
+                <th>
+                    <input type="button" name="btnAction" value="Bid Labors" class="btn btn-link text-white" style="text-decoration: none; cursor: default" />
+                </th>
+                <th>
+                    <input type="button" name="btnAction" value="Bid Status" class="btn btn-link text-white" style="text-decoration: none; cursor: default" />
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        <a asp-controller="Projects" asp-action="Details" asp-route-ID="@item.ProjectID">
+                            @Html.DisplayFor(modelItem => item.Project.Site)
+                        </a>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Date)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Amount)
+                    </td>
+                    <td>
+                        @{
+                            int bidLabourCount = item.BidLabors.Count();
+
+                            if (bidLabourCount > 0)
+                            {
+                                string firstLabour = item.BidLabors.FirstOrDefault().Labor.Type;
+                                if (bidLabourCount > 1)
+                                {
+                                    string labourList = "";
+                                    var bidLabourList = item.BidLabors.ToList();
+
+                                    for (int i = 1; i < bidLabourCount; i++)
+                                    {
+                                        labourList += bidLabourList[i].Labor.Type + " <br />";
+                                    }
+                                    <a class="" role="button" data-toggle="collapse" href="#collapseSum@(item.ID)"
+                                       aria-expanded="false" aria-controls="collapseSum@(item.ID)">
+                                        <p>@firstLabour <span class="badge badge-pill badge-info"> @bidLabourCount</span></p>
+                                    </a>
+                                    <div class="collapse" id="collapseSum@(item.ID)">
+                                        @foreach (var p in item.BidLabors)
+                                        {
+                                            @p.Labor.Type <br />
+                                        }
+                                    </div>
+                                }
+                                else
+                                {
+                                    @firstLabour
+                                }
+                            }
+                            else
+                            {
+                                <span>No bid labours found</span>
+
+                            }
+                        }
+                    </td>
+                    <td style="text-align:center;">
+                        @{
+                            string status = item.ApproveBid.Status;
+                            if (status == "Approved By Company")
+                            {
+                                <button type="button" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Approved By Company" style="border: none; background: transparent;">
+                                    <i class="fa-solid fa-circle-check" style="background-color:#FFF; color: #03A9F4; font-size: 20px;"></i>
+                                </button>
+
+                            }
+                            else if (status == "Approved By Client")
+                            {
+                                <button type="button" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Approved By Client" style="border: none; background: transparent;">
+                                    <i class="fa-solid fa-circle-check" style="background-color:#FFF; color: #80c904; font-size: 20px;"></i>
+                                </button>
+                            }
+                            else if (status == "Pending")
+                            {
+                                <button type="button" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Pending" style="border: none; background: transparent;">
+                                    <i class="fa-solid fa-circle-exclamation" style="background-color: #FFF; color: #757575; font-size: 20px; "></i>
+                                </button>
+                            }
+                            else
+                            {
+                                <button type="button" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Rejected" style="border: none; background: transparent;">
+                                    <i class="fa-solid fa-circle-xmark" style="background-color: #FFF; color: #F44336; font-size: 20px; "></i>
+                                </button> }
+                        }
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+                        @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                        {
+                            <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <partial name="_PagingNavbar" />
+</form>
+@section Scripts {
+    <script>
+        $(function () {
+            $('[data-toggle="popover"]').popover()
+        })
+    </script>
+}

@@ -1,0 +1,59 @@
+﻿@model NBD_BID_SYSTEM.Models.Staff
+
+@{
+    ViewData["Title"] = "Edit Account";
+}
+
+<h2>Edit Account Details</h2>
+
+<h4>Edit Account for @User.Identity.Name</h4>
+
+<hr />
+<form asp-action="Edit">
+    <div class="row">
+        <div class="col-md-4">
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ID" />
+            <input type="hidden" name="Email" value="@User.Identity.Name" />
+            <div class="form-group">
+                <label asp-for="FirstName" class="control-label"></label>
+                <input asp-for="FirstName" class="form-control" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LastName" class="control-label"></label>
+                <input asp-for="LastName" class="form-control" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Phone" class="control-label"></label>
+                <input asp-for="Phone" class="form-control" />
+                <span asp-validation-for="Phone" class="text-danger"></span>
+            </div>
+            @if (User.IsInRole("Admin"))
+            {
+            <div class="form-group">
+                <label asp-for="PositionID" class="control-label"></label>
+                <select asp-for="PositionID" class="form-control" asp-items="ViewBag.PositionID">
+                    <option value="">Select a Position</option>
+                </select>
+                <span asp-validation-for="PositionID" class="text-danger"></span>
+            </div>
+            }
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+</form>
+
+
+<div>
+    <a asp-action="Details">Back to Account Details</a>
+</div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+

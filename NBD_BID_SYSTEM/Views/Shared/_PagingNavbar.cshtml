@@ -1,0 +1,26 @@
+﻿<partial name="_PagingModal" />
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled='disabled'" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled='disabled'" : "";
+    string togglePrevClass = Model.PageIndex == 1 ? "d-none" : "d-inline";
+    string toggleNextClass = Model.PageIndex == Model.TotalPages ? "d-none" : "d-inline";
+}
+<nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+        <li class="page-item">
+            <button type="submit" class="btn page-link" name="page" value="1" @prevDisabled><span>First</span></button>
+        </li>
+        <li class="page-item">
+            <input type="submit" class="btn page-link @togglePrevClass" name="page" value="@(Model.PageIndex-1)" @prevDisabled />
+        </li>
+        <li class="page-item">
+            <input type ="button" class="btn page-item bg-primary text-white" name="page" value="@Model.PageIndex" data-toggle="modal" data-target="#pageSizeModal" title="Click to change page size." />
+        </li> 
+        <li class="page-item">   
+            <input type="submit" class="btn page-item @toggleNextClass" name="page" value="@(Model.PageIndex + 1)" @nextDisabled />
+        </li>
+        <li class="page-item">
+             <button type ="submit" class="btn page-item" name="page" value="@Model.TotalPages" @nextDisabled ><span>Last</span></button>
+        </li>
+    </ul>
+</nav>

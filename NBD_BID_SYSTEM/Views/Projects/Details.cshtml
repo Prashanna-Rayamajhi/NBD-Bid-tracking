@@ -1,0 +1,84 @@
+﻿@model NBD_BID_SYSTEM.Models.Project
+
+@{
+    ViewData["Title"] = "Project Details";
+}
+
+<h2>Project Details</h2>
+<div style="text-align:center">
+    <h4>@Model.Site</h4>
+</div>
+<div style="font-size:20px;">
+    <hr />
+    <dl class="row" style="margin-top:5%;">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Site):
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Site)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.BeginDate):
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.BeginDate)
+        </dd>
+        <dt class="col-sm-3" style="white-space:nowrap">
+            @Html.DisplayNameFor(model => model.CompletionDate):
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.CompletionDate)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Bids.FirstOrDefault(b => b.ProjectID == model.ID).Date):
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Bids.FirstOrDefault(b => b.ProjectID == model.ID).Date)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Client.Address):
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Client.Address)
+            <br />
+            @Html.DisplayFor(model => model.Client.City):
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Client):
+        </dt>
+        <dd class="col-sm-9">
+            <a asp-controller="Clients" asp-action="Details" asp-route-ID="@Model.ClientID">
+                @Html.DisplayFor(model => model.Client.Name)
+            </a>
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Bids):
+        </dt>
+        <dd class="col-sm-9">
+
+            @if (@Model.Bids.Count > 0)
+            {
+
+                @foreach (var p in Model.Bids)
+                {
+            <a asp-controller="Bids" asp-action="Details" asp-route-ID="@p.ID">
+                @p.Date.ToShortDateString() - $@p.Amount<br />
+            </a>
+                }
+
+            }
+            else
+            {
+                <span>No Bids</span>
+            }
+        </dd>
+    </dl>
+</div>
+<div style="font-size:18px">
+    <a asp-action="Edit" class="btn btn-outline-primary" asp-route-id="@Model.ID">Edit</a> |
+    @if (User.IsInRole("Admin") || User.IsInRole("Designer") || User.IsInRole("Manager"))
+    {
+        <a asp-action="Create" asp-route-ProjectID="@Model.ID" asp-controller="Bids">Add a bid</a>
+    }
+    <a href='@ViewData["returnURL"]' class="ml-2">Back to Project List</a>
+</div>

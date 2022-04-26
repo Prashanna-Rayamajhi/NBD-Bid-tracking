@@ -1,0 +1,160 @@
+﻿@model IEnumerable<NBD_BID_SYSTEM.Models.Client>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1 class="mb-4">Clients Information</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-outline-primary">Add New Client</a>
+</p>
+<form asp-action="Index" method="get">
+    <!--Hidden Inputs-->
+    <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
+    <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
+
+    <!--Form elements that is collapseable-->
+    <input type="button" value="Filter Options" id="collapseBtn" class="btn btn-outline-secondary mt-2 mb-1" data-toggle="collapse" data-target="#collapsableFilterOptions" aria-expanded="false" aria-controls="collapsableFilterOptions" />
+    <div class="container bg-light pt-3 pb-4 collapse @ViewData["IsFiltering"]" id="collapsableFilterOptions">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label for="clientName" class="control-label">Client Name</label>
+                    <input type="text" id="clientName" name="clientName" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label for="city" class="control-label">City</label>
+                    <input type="text" id="city" name="searchCity" class="form-control" />
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <label for="ProvinceID" class="control-label">Province</label>
+                <select name="ProvinceID" id="ProvinceID" class="form-control" asp-items="ViewBag.ProvinceID">
+                    <option value=null>Select Province</option>
+                </select>
+            </div>
+            <div class="col-sm-12">
+                <input type="submit" name="btnAction" value="Filter" class="btn btn-outline-success" />
+                <a asp-action="Index" class="btn btn-outline-dark">Clear </a>
+            </div>
+
+        </div>
+    </div>
+    <table class="table table-striped table-borderless">
+        <colgroup>
+            <col />
+            <col width="200" />
+            <col />
+            <col />
+            <col />
+            <col />
+            <col width="200"/>
+        </colgroup>
+        <thead style="background: #198ab4; color:#FFF; font-weight:200; ">
+            <tr>
+                <th>
+                    <input type="submit" name="btnAction" value="Name" class="btn btn-link text-white" />
+                </th>
+                <th>
+                    <input type="submit" name="btnAction" value="Contact Person" class="btn btn-link text-white" />
+                </th>
+                <th>
+                    <input type="button" name="btnAction" value="Address" class="btn btn-link text-white" style="cursor: default; text-decoration: none" />
+                </th>
+                <th>
+                    <input type="submit" name="btnAction" value="City" class="btn btn-link text-white" />
+                </th>
+                <th>
+                    <input type="submit" name="btnAction" value="Province" class="btn btn-link text-white" />
+                </th>
+                <th>
+                    <input type="button" name="btnAction" value="Phone Number" class="btn btn-link text-white" style="cursor: default; text-decoration: none" />
+                </th>
+                <th>
+                    <input type="button" name="btnAction" value="Projects" class="btn btn-link text-white" style="cursor: default; text-decoration: none" />
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td style="white-space:nowrap">
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CpFullName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Address)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.City)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Province.Abbrevation)
+                    </td>
+
+                    <td style="white-space:nowrap">
+                        @Html.DisplayFor(modelItem => item.PhoneFormatted)
+                    </td>
+                    <td>
+                        @{
+                        int projectCount = item.Projects.Count;
+                        if (projectCount > 0)
+                        {
+                            string firstProject = item.Projects.FirstOrDefault().Site;
+                            if (projectCount > 1)
+                            {
+                                string projectList = "";
+                                var c = item.Projects.ToList();
+                                for (int i = 1; i < projectCount; i++)
+                                {
+                                    projectList += c[i].Site + " <br />";
+                                }
+                                <a class="" role="button" data-toggle="collapse" href="#collapseSum@(item.ID)"
+                                   aria-expanded="false" aria-controls="collapseSum@(item.ID)">
+                                    <p>@firstProject <span class="badge badge-pill badge-info"> @projectCount</span></p>
+                                </a>
+                                <div class="collapse" id="collapseSum@(item.ID)">
+                                    @foreach (var p in item.Projects)
+                                    {
+                                        <a asp-controller="Projects" asp-action="Details" asp-route-ID="@p.ID">
+                                            @p.Site <br />
+                                        </a>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <a asp-controller="Projects" asp-action="Details" asp-route-ID="@item.Projects.FirstOrDefault().ID">
+                                    @firstProject
+                                </a>
+                            }
+                        }
+                        else
+                        {
+                            <center><span>No Projects</span></center>
+                        }
+                    }
+                    </td>
+                    <td style="white-space:nowrap">
+                        <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.ID">Details</a> 
+                       <!-- <a asp-action="Delete" asp-route-id="@item.ID">Delete</a> -->
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <partial name="_PagingNavbar" />
+</form>
+@section Scripts {
+    <script type="text/javascript">
+       
+       
+    </script>
+}
+

@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31624.102
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NBD_BID_SYSTEM", "NBD_BID_SYSTEM.csproj", "{CECF99C1-0F2E-43F8-94BA-42107BA77821}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CECF99C1-0F2E-43F8-94BA-42107BA77821}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CECF99C1-0F2E-43F8-94BA-42107BA77821}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CECF99C1-0F2E-43F8-94BA-42107BA77821}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CECF99C1-0F2E-43F8-94BA-42107BA77821}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {34271456-1DAB-4A06-A29F-4320E4EC71B1}
+	EndGlobalSection
+EndGlobal

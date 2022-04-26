@@ -1,0 +1,183 @@
+﻿@model NBD_BID_SYSTEM.Models.Bid
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h3>Edit Bid For: @Model.Project.Site <br /> Bid Date: @Model.Date.Date.ToShortDateString()</h3>
+
+
+<hr />
+<form asp-action="Edit" class="container" id="bidForm">
+    <div class="slideTab" style="width: 100%">
+        <div class="row">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ID" />
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label asp-for="ProjectID" class="control-label"></label>
+                    <select asp-for="ProjectID" class="form-control" asp-items="ViewBag.ProjectID"></select>
+                    <span asp-validation-for="ProjectID" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Date" class="control-label"></label>
+                    <input asp-for="Date" class="form-control" />
+                    <span asp-validation-for="Date" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Amount" class="control-label"></label>
+                    <input asp-for="Amount" class="form-control" />
+                    <span asp-validation-for="Amount" class="text-danger"></span>
+                </div>
+                @if (!User.IsInRole("Admin"))
+                {
+                    @:<input type="hidden" name="ApproveBidID" value="@ViewBag.ApproveBidID" />
+                }
+                else
+                {
+                    <div class="form-group">
+                        <label asp-for="ApproveBidID" class="control-label"></label>
+                        <select asp-for="ApproveBidID" class="form-control" asp-items="ViewBag.ApproveBidID"></select>
+                        <span asp-validation-for="ApproveBidID" class="text-danger"></span>
+                    </div>
+                }
+
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="control-label">
+                        @Html.DisplayNameFor(model => model.BidLabors)
+                    </label>
+                    <div class="col-md-12">
+                        <table>
+                            <tr>
+                                @{
+                                    int cnt = 0;
+                                    List<NBD_BID_SYSTEM.ViewModels.CheckBoxVM> checkboxes = ViewBag.LaborOptions;
+                                    foreach (var checkbox in checkboxes)
+                                    {
+                                        if (cnt++ % 2 == 0)
+                                        {
+                                        @:</tr><tr>
+                                        }
+
+                                        <td>
+                                            <input type="checkbox" name="selectedOptions"
+                                                   value="@checkbox.ID"
+                                                   @(Html.Raw(checkbox.Assigned ? "checked=\"checked\"" : "")) />
+                                            @checkbox.DisplayText:&nbsp;&nbsp;
+
+                                        </td>
+
+                                    }
+
+                                @:</tr>
+                                }
+                            </table>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">@Html.DisplayNameFor(model => model.BidStaffs)</label>
+                        <div class="col-md-offset-1">
+                            <table>
+                                <tr>
+                                    @{
+                                        int ct = 0;
+                                        List<NBD_BID_SYSTEM.ViewModels.CheckBoxVM> checkboxStaffs = ViewBag.StaffOptions;
+                                        foreach (var checkbox in checkboxStaffs)
+                                        {
+                                            if (ct++ % 2 == 0)
+                                            {
+                                            @:</tr><tr>
+                                            }
+                                            @:<td>
+                                                <input type="checkbox"
+                                                       name="selectedBidstaff"
+                                                       value="@checkbox.ID"
+                                                       @(Html.Raw(checkbox.Assigned ? "checked=\"checked\"" : "")) />
+                                                @checkbox.DisplayText @:&nbsp;&nbsp;
+                                            @:</td>
+                                        }
+                                    @:</tr>
+                                    }
+                                </table>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slideTab">
+                <h4>Manage Bid Labors:</h4>
+                <div class="row">
+                    <div class="col-sm-6 bidLaborForm">
+                        
+                    </div>
+                </div>
+
+            </div>
+            <div class="slideTab">
+                <div class="row w-100 mb-3">
+                    <h4 class="d-inline-block w-75">Manage Materials</h4>
+                    <button class="btn btn-light float-right ml-5" type="button" data-toggle="collapse" data-target="#collapseTable" aria-expanded="false" aria-controls="collapseTable">Added Material <span class="badge badge-pill badge-primary" id="countMaterial">@Model.Materials.Count()</span></button>
+                </div>
+
+                <div class="row" id="addedMaterialList">
+
+                    <div class="col-sm-12 collapse show" id="collapseTable">
+                        <table class="table table-striped table-borderless">
+                            <thead style="background: #198ab4; color:#FFF; font-weight:200;">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Code</th>
+                                    <th>Price</th>
+                                    <th>Quantity</th>
+                                    <th>Cost</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="materialData">
+                               
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row" id="materialFormList">
+                    <div class="col-sm-6" id="materialLists">
+                        <div class="form-group">
+                            <label for="typeID">Filter by type:</label>
+                            <select class="form-control" id="selectInvList">
+                                <option value="0">Select Inventory type</option>
+                            </select>
+                        </div>
+                        <div class="list-group" id="listGroup">
+
+                        </div>
+                    </div>
+                    <div class="col-sm-6" id="materialForm">
+
+                    </div>
+                </div>
+            </div>
+            <div style="overflow:auto;">
+                <div style="float:right;">
+                    <a asp-action="Index">Back to List</a> |
+                    <button type="button" id="prevBtn" onclick="nextPrev(-1)" class="btn btn-outline-dark">Previous</button>
+                    <button type="button" id="nextBtn" onclick="nextPrev(1, @Model.ID)" class="btn btn-outline-primary">Next</button>
+                </div>
+
+            </div>
+            <div style="text-align:center;margin-top:40px;">
+                <span class="step"></span>
+                <span class="step"></span>
+                <span class="step"></span>
+            </div>
+
+        </form>
+        @section Scripts {
+            <script type="text/javascript" src="~/js/Slider.js"></script>
+            <script type="text/javascript" src="~/js/MantainMaterialForm.js">
+
+            </script>
+
+        }

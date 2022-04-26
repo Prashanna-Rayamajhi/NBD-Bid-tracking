@@ -1,0 +1,258 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+@*For Cookies*@
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@model IEnumerable<NBD_BID_SYSTEM.Models.Project>
+@{
+    ViewData["Title"] = "Home Page";
+}
+@if (!User.Identity.IsAuthenticated)
+{
+    <div class="text-center container-fluid bg-img">
+        <h1 class="">Natural By Design</h1>
+        <div class="container">
+        </div>
+    </div>
+}
+else
+{
+    <div class="text-center container-fluid">
+        <h1 class="">Natural By Design</h1>
+        <div class="container">
+            @if (SignInManager.IsSignedIn(User))
+            {
+                var userName = HttpContextAccessor.HttpContext.Request.Cookies["userName"] ?? UserManager.GetUserName(User);
+                <h1 style="margin: 0; padding-bottom: 5px; font-size: 70px; background: linear-gradient(#198ab4 60%, #000 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; ">Welcome @userName!</h1>
+                <hr />
+                ///ill add chart here using chart.js
+
+                
+                    <div class="row">
+                        <div class="col-sm-9">
+                            <canvas id="myChart"></canvas>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="card">
+                                <div class="card-header">
+                                    Synopsis
+                                </div>
+                                <div class="card-body">
+                                    @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                                    {
+                                        <h5 class="card-title">
+                                            Total Profit
+                                        </h5>
+                                        <p class="card-text">
+                                            Total Bid Amount: $@ViewData["TotalBidAmount"] <br />
+                                            Total Expenses:  $@ViewData["TotalExpense"] <br />
+                                            <hr />
+                                            Gross-Profit: $@(ViewData["Profit"])
+                                        </p>
+                                    }
+                                    else if (User.IsInRole("Designer"))
+                                    {
+                                        <h5 class="card-title">
+                                            Bid History
+                                        </h5>
+                                        <p class="card-text">
+                                            Total Bids: @ViewData["TotalBids"] <br />
+                                            Approved Bids:  @ViewData["Approved"] <br />
+
+                                        </p>
+                                    }
+                                    else
+                                    {
+                                       <p class="card-text">Project Count: @Model.Count() </p>
+
+                                    }
+                                </div>
+                            </div>
+                           
+                        </div>
+                    </div>
+               
+
+                @if (User.IsInRole("SalesPerson"))
+                {
+                    <h2>Current Projects:</h2>
+                    <hr />
+                    <div class="row">
+                        @foreach (var item in Model)
+                        {
+                            @if (item.Bids?.FirstOrDefault().BidStaffs.FirstOrDefault().Staff.Email == User.Identity.Name)
+                            {
+                                <div class="col-sm-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            Project:  @Html.DisplayFor(modelItem => item.Site)
+                                        </div>
+                                        <div class="card-body">
+                                            <h5 class="card-title">
+                                                Client: <a asp-controller="Clients" asp-action="Details" asp-route-ID="@item.ClientID">@item.Client.Name</a>
+                                            </h5>
+                                            <p class="card-text">
+                                                Bid Made: @item.Bids.Count()
+                                            </p>
+                                        </div>
+                                        <a class="btn btn-primary" asp-controller="Projects" asp-action="Details" asp-route-ID="@item.ID">
+                                            More info
+                                        </a>
+                                    </div>
+                                </div>
+
+                            }
+                        }
+                    </div>
+                }
+                @if (User.IsInRole("Designer"))
+                {
+                    <h2>Current Bids:</h2>
+                    <hr />
+                    <div class="row">
+                        @foreach (var item in Model)
+                        {
+
+                            @if (item.Bids.FirstOrDefault().BidStaffs.FirstOrDefault().Staff.Email == User.Identity.Name)
+                            {
+                                <div class="col-sm-4">
+                                    <div class="card">
+                                        <div class="card-header"> @Html.DisplayFor(modelItem => item.Site)</div>
+                                        <div class="card-body">
+                                            <h5 class="card-title">
+                                                @Html.DisplayFor(modelItem => item.Bids.FirstOrDefault(b => b.ProjectID == item.ID).Date) -
+                                                @Html.DisplayFor(modelItem => item.Bids.FirstOrDefault(b => b.ProjectID == item.ID).Amount)
+                                            </h5>
+                                            <p class="card-text">Status: @Html.DisplayFor(modelItem => item.Bids.FirstOrDefault(b => b.ProjectID == item.ID).ApproveBid.Status)</p>
+
+                                            <a class="btn btn-primary" asp-controller="Bids" asp-action="Details" asp-route-ID="@item.ID">
+                                                More info
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+
+                        }
+                    </div>
+                }
+                @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                {
+
+                    <h2>Bids Pending Management Approval:</h2>
+                    <hr />
+                    <div class="row">
+
+                        @foreach (var item in Model)
+                        {
+
+                            @if (item.Bids.FirstOrDefault(b => b.ProjectID == item.ID).ApproveBid.Status == "Pending")
+                            {
+                                <div class="col-sm-4">
+                                    <div class="card">
+                                        <div class="card-header"> @Html.DisplayFor(modelItem => item.Site)</div>
+                                        <div class="card-body">
+                                            <h5 class="card-title">
+                                                @Html.DisplayFor(modelItem => item.Bids.FirstOrDefault(b => b.ProjectID == item.ID).Date) -
+                                                @Html.DisplayFor(modelItem => item.Bids.FirstOrDefault(b => b.ProjectID == item.ID).Amount)
+                                            </h5>
+                                            <p class="card-text">Status: @Html.DisplayFor(modelItem => item.Bids.FirstOrDefault(b => b.ProjectID == item.ID).ApproveBid.Status)</p>
+
+                                            <a class="btn btn-primary" asp-controller="Bids" asp-action="Details" asp-route-ID="@item.ID">
+                                                More info
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                        }
+
+                    </div>
+
+                    <h2 class="mt-4">Bids Pending Client Approval:</h2>
+                    <hr />
+                    <div class="row">
+
+                        @foreach (var item in Model)
+                        {
+                            @if (item.Bids.FirstOrDefault(b => b.ProjectID == item.ID).ApproveBid.Status == "Approved By Company")
+                            {
+                                <div class="col-sm-4">
+                                    <div class="card">
+                                        <div class="card-header"> @Html.DisplayFor(modelItem => item.Site)</div>
+                                        <div class="card-body">
+                                            <h5 class="card-title">
+                                                @Html.DisplayFor(modelItem => item.Bids.FirstOrDefault(b => b.ProjectID == item.ID).Date) -
+                                                @Html.DisplayFor(modelItem => item.Bids.FirstOrDefault(b => b.ProjectID == item.ID).Amount)
+                                            </h5>
+                                            <p class="card-text">Status: @Html.DisplayFor(modelItem => item.Bids.FirstOrDefault(b => b.ProjectID == item.ID).ApproveBid.Status)</p>
+
+                                            <a class="btn btn-primary" asp-controller="Bids" asp-action="Details" asp-route-ID="@item.ID">
+                                                More info
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+
+                    </div>
+                }
+            }
+        </div>
+    </div>
+}
+@section Scripts{
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            const config = {
+                type: 'bar',
+                data: {
+                    datasets: [
+                        {
+                            data:@if (User.IsInRole("Admin") || User.IsInRole("Manager") || User.IsInRole("Designer"))
+                            {
+                                @Html.Raw(ViewData["BidData"])
+                            }
+                            else
+                            {
+                                @Html.Raw(ViewData["SummaryData"])
+                            }
+                        }
+                    ]
+                },
+                options: {
+                    plugins: {
+                        legend: { display: false },
+                        title: {
+                            display: true,
+                            text: "Summary Data"
+                        }
+                    },
+                    parsing: {
+                        @if (User.IsInRole("Admin") || User.IsInRole("Manager") || User.IsInRole("Designer"))
+                        {
+                            @:xAxisKey: 'Name',
+                            @:yAxisKey: 'Amount'
+                         }
+                         else
+                         {
+                            @:xAxisKey: 'Client',
+                            @:yAxisKey: 'Projects'
+                          }
+
+
+                    }
+                }
+            };
+            const myChart = new Chart(
+                document.getElementById("myChart"), config)
+        })
+
+    </script>
+   
+}

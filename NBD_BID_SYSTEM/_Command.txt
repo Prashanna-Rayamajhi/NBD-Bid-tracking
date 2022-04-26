@@ -1,0 +1,6 @@
+﻿Add-Migration -Context NBDBidSystemContext -o Data\NBDMigrations Initial
+Update-database -Context NBDBidSystemContext
+
+#For application DB context
+Add-Migration -Context ApplicationDbContext -o Data\Migrations Initial
+Update-database -Context ApplicationDbContext

@@ -1,0 +1,51 @@
+﻿@model NBD_BID_SYSTEM.Models.Project
+
+@{
+    ViewData["Title"] = "Delete Project";
+}
+
+<h2>Delete Project</h2>
+
+<h3>Are you sure you want to delete @Model.Site?</h3>
+<div>
+    <hr />
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Site):
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Site)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.BeginDate):
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.BeginDate)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.CompletionDate):
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.CompletionDate)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Bids.FirstOrDefault(b=> b.ProjectID == model.ID).Date):
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Bids.FirstOrDefault(b => b.ProjectID == model.ID).Date)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Client):
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Client.Name)
+        </dd>
+    </dl>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="ID" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a href='@ViewData["returnURL"]' class="ml-2">Back to Project List</a>
+    </form>
+</div>

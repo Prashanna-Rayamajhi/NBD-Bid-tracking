@@ -1,0 +1,34 @@
+﻿@model NBD_BID_SYSTEM.Models.BidLabor
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h2>Edit Bid Labor: @Model.Labor.Type for Bid of Date: @Model.Bid.Date</h2>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ID" />
+            <input type="hidden" name="BidID" value="@ViewBag.BidID" />
+            <input type="hidden" name="LaborID" value="@ViewBag.LaborID" />
+
+            <div class="form-group">
+                <label asp-for="HoursWorked" class="control-label"></label>
+                <input asp-for="HoursWorked" class="form-control" />
+                <span asp-validation-for="HoursWorked" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

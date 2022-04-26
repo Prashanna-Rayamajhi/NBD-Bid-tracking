@@ -1,0 +1,75 @@
+﻿@model NBD_BID_SYSTEM.Models.Client
+
+@{
+    ViewData["Title"] = "Delete Client";
+}
+
+<h2>Delete Client</h2>
+
+<h3>Are you sure you want to delete @Model.Name?</h3>
+<div>
+    <hr />
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Name):
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.CpFName):
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.CpFName)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.CpLName):
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.CpLName)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.CpPosition):
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.CpPosition)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Address):
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Address)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.City):
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.City)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Province):
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Province.Abbrevation)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.PostalCode):
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.PostalCode)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.PhoneNumber):
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.PhoneFormatted)
+        </dd>
+    </dl>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="ID" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a href='@ViewData["returnURL"]' class="ml-2">Back to Client List</a>
+    </form>
+</div>

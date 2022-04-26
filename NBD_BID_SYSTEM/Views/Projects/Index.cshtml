@@ -1,0 +1,107 @@
+﻿@model IEnumerable<NBD_BID_SYSTEM.Models.Project>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1 class="mb-3">Project Information</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-outline-primary">Add New Project</a>
+</p>
+<form asp-action="Index" method="get">
+    <!--Hidden Inputs-->
+    <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
+    <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
+
+    <input type="button" value="Filter/Search" class="btn btn-outline-secondary mb-1" data-toggle="collapse" data-target="#collapseableFilter" aria-expanded="false" aria-controls="collapseableFilter" />
+    <div class="conatiner p-3 collapse @ViewData["IsFiltering"] bg-light" id="collapseableFilter">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="clientName" class="control-label">Client</label>
+                    @Html.TextBox("clientName", null, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="control-label">Bid Date</label>
+                    <input type="date" name="bidDate" class="form-control" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="control-label">Project Site</label>
+                    @Html.TextBox("projectSite", null, new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <input type="submit" name="btnAction" value="Filter" class="btn btn-outline-success" />
+                    <a asp-action="Index" class="btn btn-outline-dark">Clear</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <table class="table table-borderless table-striped">
+        <thead style="background: #198ab4; font-weight: normal; color: #fff">
+            <tr>
+                <th>
+                    <input type="submit" name="btnAction" value="Site" class="btn btn-link text-white" />
+                </th>
+                <th>
+                    <input type="submit" name="btnAction" value="Begin Date" class="btn btn-link text-white" />
+                </th>
+                <th>
+                    <input type="submit" name="btnAction" value="Completion Date" class="btn btn-link text-white" />
+                </th>
+                <th>
+                    <input type="submit" name="btnAction" value="Bid Date" class="btn btn-link text-white" />
+                </th>
+                <th>
+                    <input type="submit" name="btnAction" value="Client" class="btn btn-link text-white" />
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Site)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.BeginDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CompletionDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Bids.FirstOrDefault(b => b.ProjectID == item.ID).Date)
+                    </td>
+                    <td>
+                        <a asp-controller="Clients" asp-action="Details" asp-route-ID="@item.ClientID">
+                            @Html.DisplayFor(modelItem => item.Client.Name)
+                        </a>
+
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <partial name="_PagingNavbar" />
+</form>
